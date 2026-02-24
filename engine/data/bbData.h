@@ -3,7 +3,9 @@
 
 #include "engine/logic/bbIntTypes.h"
 
-extern char test_string[64];
+#define KEY_LENGTH 64
+
+extern char test_string[KEY_LENGTH];
 extern I32 test_integer;
 
 
