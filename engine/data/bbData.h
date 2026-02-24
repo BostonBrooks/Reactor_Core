@@ -2,8 +2,7 @@
 #define BB_DATA_H
 
 #include "engine/logic/bbIntTypes.h"
-
-#define KEY_LENGTH 64
+#include "engine/data/bbConstants.h"
 
 extern char test_string[KEY_LENGTH];
 extern I32 test_integer;

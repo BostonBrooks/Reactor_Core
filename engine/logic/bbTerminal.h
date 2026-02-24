@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <threads.h>
 
 #include "engine/logic/bbFlag.h"
 #include "engine/logic/bbIntTypes.h"

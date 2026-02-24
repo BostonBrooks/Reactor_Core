@@ -13,7 +13,8 @@ add_executable(Reactor_Core test/bbTest_core.c
         engine/logic/bbList.c
         engine/logic/bbDictionary.c
         engine/logic/bbBloatedPool.c
-        engine/core/bbCoreApp.c)
+        engine/core/bbCoreApp.c
+        engine/data/bbData.c)
 
 target_include_directories(Reactor_Core  PRIVATE "./")
 

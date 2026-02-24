@@ -51,3 +51,5 @@ bbFlag bbInstruction_uncheckActions_fn(bbCore* core, bbInstruction* instruction)
 
 bbFlag bbInstruction_setString_fn(bbCore* core, bbInstruction* instruction);
 bbFlag bbInstruction_unsetString_fn(bbCore* core, bbInstruction* instruction);
+
+#endif //BB_INSTRUCTION_H

@@ -1,5 +1,6 @@
 #ifndef BB_CORE_INPUTS_H
 #define BB_CORE_INPUTS_H
+#include "engine/core/bbInstruction.h"
 #include "engine/core/bbCore.h"
 
 
