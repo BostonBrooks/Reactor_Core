@@ -12,6 +12,9 @@
 
 #ifndef BB_CORE_H
 #define BB_CORE_H
+#include "engine/logic/bbIntTypes.h"
+#include "engine/logic/bbList.h"
+#include "engine/logic/bbVPool.h"
 
 typedef struct
 {
