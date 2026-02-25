@@ -32,7 +32,17 @@ int main(void)
         //bbCore_react(&core);
 
 
-        sprintf(str, "~i = %d", i+3);
+        sprintf(str, "(%d)", i+3);
+
+        bbAction_setString(&core,
+                         0,
+                         collision++,
+                         i,
+                         i+3,
+                         str);
+
+
+        sprintf(str, "(%d.1)", i+3);
 
         bbAction_setString(&core,
                          0,
