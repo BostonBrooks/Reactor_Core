@@ -5,7 +5,7 @@
 
 
 //create a bbAction
-bbFlag bbAction_seString(void* Core,
+bbFlag bbAction_setString(void* Core,
                          U32 player,
                          U32 collision,
                          U64 created_tick,

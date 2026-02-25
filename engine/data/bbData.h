@@ -7,6 +7,8 @@
 extern char test_string[KEY_LENGTH];
 extern I32 test_integer;
 
+//bbTerminal.h uses this as a reference
+extern U64 test_time;
 
 
 #endif //BB_DATA_H

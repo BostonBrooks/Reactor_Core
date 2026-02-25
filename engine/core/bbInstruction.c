@@ -3,6 +3,7 @@
 #include "engine/core/bbInstruction.h"
 
 #include "bbAction.h"
+#include "bbCoreInputs.h"
 #include "engine/logic/bbString.h"
 
 bbFlag bbInstruction_setString_fn(bbCore* core, bbInstruction* instruction)
@@ -44,7 +45,7 @@ bbFlag bbInstruction_setString_fn(bbCore* core, bbInstruction* instruction)
 }
 
 
-bbFlag bbInstruction_unsetQuote_fn(bbCore* core, bbInstruction* instruction)
+bbFlag bbInstruction_unsetString_fn(bbCore* core, bbInstruction* instruction)
 {
 
     printf("-old quote: %s, new quote %s\n",test_string, instruction->data.string);
@@ -75,4 +76,122 @@ bbFlag bbInstruction_unsetQuote_fn(bbCore* core, bbInstruction* instruction)
     }
     bbAssert(0==1, "We should not get here\n");
 
+}
+
+bbFlag bbInstruction_setTime_fn(bbCore* core, bbInstruction* instruction)
+{
+
+    bbInstruction* undo_instruction;
+    bbVPool_alloc(core->instruction_pool, (void**)&undo_instruction);
+    undo_instruction->type = bbInstruction_unsetTime;
+    undo_instruction->data.unsigned_long = core->simulation_time;
+    undo_instruction->source = instruction->source;
+
+
+    core->simulation_time = instruction->data.unsigned_long ;
+
+    printf("+time = %lu\n", core->simulation_time);
+    if (instruction->source == bbInstructionSource_internal)
+    {
+        bbVPool_free(core->instruction_pool, (void*)instruction);
+        undo_instruction->redo_instruction.u64 = 0;
+        bbList_pushL(&core->undo_stack,(void*)undo_instruction);
+        return bbSuccess;
+    }
+    if (instruction->source == bbInstructionSource_input)
+    {
+        bbHandle handle;
+        bbVPool_reverseLookup(core->instruction_pool, instruction, &handle);
+        undo_instruction->redo_instruction = handle;
+        bbList_pushL(&core->undo_stack,(void*)undo_instruction);
+        return bbSuccess;
+    }
+    if (instruction->source == bbInstructionSource_action)
+    {
+        undo_instruction->redo_instruction = instruction->redo_instruction;
+        bbList_pushL(&core->undo_stack,(void*)undo_instruction);
+        return bbSuccess;
+    }
+    bbNotHere()
+
+
+}
+bbFlag bbInstruction_unsetTime_fn(bbCore* core, bbInstruction* instruction)
+{
+    core->simulation_time = instruction->data.unsigned_long ;
+
+    printf("-time = %lu\n", core->simulation_time);
+    if (instruction->source == bbInstructionSource_internal)
+    {
+        bbVPool_free(core->instruction_pool, (void*)instruction);
+        return bbSuccess;
+    }
+    if (instruction->source == bbInstructionSource_input)
+    {
+        bbInstruction* redo_instruction;
+        bbVPool_lookup(core->instruction_pool, (void**)&redo_instruction, instruction->redo_instruction);
+        bbList_pushL(&core->do_stack, redo_instruction);
+        bbVPool_free(core->instruction_pool, (void*)instruction);
+        return bbSuccess;
+    }
+    if (instruction->source == bbInstructionSource_action)
+    {
+        //TODO place instruction->redo_instruction into core->action_queue
+        bbAction* redo_action;
+        bbVPool_lookup(core->action_pool, (void**)&redo_action, instruction->redo_instruction);
+        bbList_sortL(&core->action_queue,(void*)redo_action);
+        bbVPool_free(core->instruction_pool, (void*)instruction);
+        return bbSuccess;
+    }
+    bbNotHere()
+
+}
+
+///check actions using the new algorithm
+bbFlag bbInstruction_checkActions_fn(bbCore* core, bbInstruction* instruction)
+{
+
+    bbAction* action;
+
+    bbFlag flag = bbList_peakL(&core->action_queue,(void**)&action);
+
+    if (action->header.act_tick < core->simulation_time)
+    {
+        //rewind until action->header.act_tick > core->simulation_time
+        //fastforward until now
+        //call bbCoreInput_checkActions()
+        //call bbCore_react()?
+
+        bbHere()
+        return bbSuccess;
+    }
+
+    if (action->header.act_tick > core->simulation_time) return bbSuccess;
+
+   flag = bbList_popL(&core->action_queue,(void**)&action);
+
+    bbCoreInput_checkActions(core, core->simulation_time,bbInstructionSource_internal,no_handle);
+
+
+    if (action->header.type == bbActionType_setString)
+    {
+        bbCoreInput_setString(core,action->header.key,bbInstructionSource_internal,no_handle);
+
+        bbVPool_free(core->action_pool, (void*)action);
+        bbCore_react(core);
+        return bbSuccess;
+    }
+
+
+
+bbHere()
+    return bbSuccess;
+}
+bbFlag bbInstruction_uncheckActions_fn(bbCore* core, bbInstruction* instruction)
+{
+bbHere()
+
+
+
+    return bbSuccess;
 }

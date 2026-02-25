@@ -15,6 +15,7 @@ bbFlag bbCore_init(bbCore* core)
     bbVPool_newBloated(&core->action_pool,sizeof(bbAction),100,1000);
     bbList_init(&core->action_queue, core->action_pool, NULL, offsetof(bbAction, header.list_element),bbAction_compare);
 
+    core->simulation_time = 0;
  return bbSuccess;
 }
 
@@ -32,6 +33,11 @@ bbFlag bbCore_react(bbCore* core)
         {
 
 ///(2) core reacts to instruction
+
+        case bbInstruction_setTime:
+            bbInstruction_setTime_fn(core, instruction);
+            break;
+
         case bbInstruction_setString:
             bbInstruction_setString_fn(core, instruction);
             break;
@@ -61,6 +67,9 @@ bbFlag bbCore_rewind(bbCore* core)
 
         switch (instruction->type)
         {
+        case bbInstruction_unsetTime:
+            bbInstruction_unsetTime_fn(core, instruction);
+            break;
 
             ///(6) core "un-reacts" to instruction
         case bbInstruction_unsetString:
