@@ -26,30 +26,30 @@ int main(void)
         bbCore_react(&core);
 
         char str[KEY_LENGTH];
-        sprintf(str, "i = %d", i);
+        //sprintf(str, "i = %d", i);
 
         //bbCoreInput_setString(&core, str, bbInstructionSource_input, no_handle);
         //bbCore_react(&core);
 
 
-        sprintf(str, "(%d)", i+3);
+        sprintf(str, "(%d)", i);
 
         bbAction_setString(&core,
                          0,
                          collision++,
                          i,
-                         i+3,
-                         str);
-
-
-        sprintf(str, "(%d.1)", i+3);
-
-        bbAction_setString(&core,
-                         0,
-                         collision++,
                          i,
-                         i+3,
                          str);
+
+
+       // sprintf(str, "(%d.1)", i+3);
+
+      //  bbAction_setString(&core,
+      //                   0,
+       //                  collision++,
+      //                   i,
+      //                   i+3,
+       //                  str);
 
 
         bbCoreInput_checkActions(&core,i,bbInstructionSource_input, no_handle);
@@ -61,5 +61,5 @@ int main(void)
     bbCore_rewind(&core);
     bbCore_react(&core);
 
-    bbHere()
+    printf("We made it to the end!\n");
 }

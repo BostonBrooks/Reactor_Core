@@ -155,33 +155,28 @@ bbFlag bbInstruction_checkActions_fn(bbCore* core, bbInstruction* instruction)
 
     bbFlag flag = bbList_peakL(&core->action_queue,(void**)&action);
 
+    if (flag != bbSuccess) return bbBreak;
+    if (action->header.act_tick > core->simulation_time) return bbBreak;
+
     if (action->header.act_tick < core->simulation_time)
     {
         //rewind until action->header.act_tick > core->simulation_time
         //fastforward until now
-        //call bbCoreInput_checkActions()
-        //call bbCore_react()?
 
-        bbHere()
-        return bbSuccess;
     }
 
-    if (action->header.act_tick > core->simulation_time) return bbSuccess;
 
    flag = bbList_popL(&core->action_queue,(void**)&action);
 
     bbCoreInput_checkActions(core, core->simulation_time,bbInstructionSource_internal,no_handle);
-
-
     if (action->header.type == bbActionType_setString)
     {
         bbCoreInput_setString(core,action->header.key,bbInstructionSource_internal,no_handle);
 
         bbVPool_free(core->action_pool, (void*)action);
         bbCore_react(core);
-        return bbSuccess;
-    }
 
+    }
 
 
 bbHere()
